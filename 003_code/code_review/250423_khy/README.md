@@ -34,7 +34,7 @@ Git으로 똑같은 작업 할 수 있음. 돈 2배로 내야함. 연구원에�
 자신 있으면 해도 됌. 근데 박사님이 그렇게 하지 말라고 할 가능성 99%
 ```
 
-아무튼 써주면 다른 사람이 뭐하는지도 볼 수 있으니 써주면 좋겠다. (어디가서 git 잘쓴다고 하면 좋아할지도)
+아무튼 써주면 다른 사람이 뭐하는지도 볼 수 있으니 써주면 좋겠다. ~~(그리고 우리팀은 모르겠지만 다른 팀들은 내심 부러워 하는게 느껴진다..)~~
 
 ### How to use Git?
 
@@ -72,6 +72,7 @@ git reflog
 git log
 git reset --hard / git reset --soft
 git merge # 권장 x
+git remote update # 누군가 작업한 remote repository가 있다면 내 local repository에서 참조할 수 있게 업데이트 필요!
 ```
 
 ### how to use git with vscode
@@ -120,7 +121,9 @@ commit 버튼을 누르면 아래와 같은 화면이 나온다.
 
 * git push
 
+![git_push](/003_code/code_review/250423_khy/images/git_push.PNG)
 
+해당 버튼을 누르면 remote repository에 업데이트 내가 commit한 내용이 업데이트 되어 현재 상태와 remote 의 상태가 같아진다.
 
 
 ### Branch는 왜 써야하는가?
@@ -155,7 +158,7 @@ branch라고 하는 것은 현재 프로젝트의 복사본을 만드는 것이�
 
   branch type을 5가지로 나눠서 관리함.
 
-  예를 들어 자판기를 만든다고 가정해서 어떤 역할인지 설명하면
+  예를 들어 자판기를 만든다고 가정하고 각 branch를 설명해보자.
 
   1. main
     * 상용화 된 자판기
@@ -180,8 +183,51 @@ branch라고 하는 것은 현재 프로젝트의 복사본을 만드는 것이�
 
 ![sbteam_git](/003_code/code_review/250423_khy/images/sbteam_git.PNG)
 
-sbteam 레포지토리가 가장 활발하게 사용되고 있어 예시로 가져옴. trunk_based development로 사용되고 있고, 박사님이 merge하면서 적절히 관리되고 있음. 그러나 최근 main에 바로 작업하는게 눈에 띄고 있음. 
+sbteam 레포지토리가 가장 활발하게 사용되고 있어 예시로 가져옴. trunk_based development로 사용되고 있고, 박사님이 merge하면서 적절히 관리되고 있음. 
 
+**그러나 최근 main에 바로 작업하는게 눈에 띄고 있음.**
+
+* git branch
+
+실제로 branch를 만들고 이동하는 실습.
+
+![git_branch_create](/003_code/code_review/250423_khy/images/create_branch.png)
+
+create하면 branch 이름을 다음과 같이 지어줘야함.
+
+![git_branch_name](/003_code/code_review/250423_khy/images/branch_name.png)
+
+이름을 지어주면 자동으로 만들어진 branch로 이동됨.
+
+여기까지의 과정이 ```git checkout -b``` 와 같은 역할을 하고있다.
+
+이렇게 branch로 이동되었다면 새로운 데이터를 추가하고 branch를 publish해야함.
+
+![branch_data_add](/003_code/code_review/250423_khy/images/branch_data_add_LI.jpg)
+
+참고로 branch에서 branch로 이동하고 싶은 경우도 종종 있는데, 나처럼 성격 급한 사람들이 commit 안하고 그냥 바꿔버리면 작업하던거 다 날려먹는다. 그래서 git에서는 모든 데이터를 commit을 하기 전까지는 checkout이 안되게 막아뒀다.   
+~~고마워요  Linus Torvalds~~
+
+main과 branch를 구분하기 위해 테스트 데이터를 만들어서 commit 해준 뒤에 다음과 같이 publish하면 새로운 branch를 remote repository에 추가할 pull request가 생성됨.
+
+![branch_publish](/003_code/code_review/250423_khy/images/branch_publish.PNG)
+
+
+위 과정을 거치면 git의 내 repository에서 pull request가 들어온다.
+
+![pull_req](/003_code/code_review/250423_khy/images/pull_request.PNG)
+
+**Compare & pull request** 를 클릭하면 다음과 같이 변경된 내용과 함께 pull request를 생성할 수 있게 된다.
+
+![create_pull_req](/003_code/code_review/250423_khy/images/create_pull_req.png)
+
+그럼 기존 분기에 현재 새롭게 업데이트 된 branch를 **Merge pull request** 를 클릭하여 merge 시킬 수 있다.
+
+![branch_merge](/003_code/code_review/250423_khy/images/merge_pull_req.png)
+
+이 경우 기존 분기와 현재 merge 시키려는 파일 간의 충돌이 없을 경우 현재 작업이 main branch에도 업데이트 되게 된다.
+
+(위 문제는 이 후 [자주 겪는 error](#자주-겪는-error-상황들) 에서 다뤄보자.)
 
 ### 앗! 내 데이터가..!
 
@@ -207,9 +253,32 @@ Blob은 Binary Large Object로 파일의 내용만을 압축된 binary 타입으
 권장 commit 횟수 : 작은 기능 단위의 변화가 있을 시 commit할 것. 자주하면 좋으나 stash 기능을 사용해서 중간중간 백업하기.
 ```
 
+여기까지 따라왔다면..
+
+commit을 하면 내가 알지는 못하지만 어떤 형태로 데이터가 남는건 알겠는데 그럼 **어떻게 복구 할 수 있을까?**
+
+git 명령어 중에는 이때까지 내가 commit 했던 내용들에 대해서 모든 log를 남겨두고 있으니 돌아가고 싶은 작업 시점의 log를 확인해서 과거로 돌아갈 수 있다!
+
+```git reflog```
+
+```git log```를 써도 상관없는데, 나는 저 명령어를 좀 더 선호한다. 해당 명령어를 콘솔에 입력하면 다음과 같이 출력되는 것을 확인할 수 있다.
+
+![git_reflog](/003_code/code_review/250423_khy/images/git_reflog.PNG)
+
+앞의 7자리 문자열은 해당 HEAD(commit)의 key값이고, 오른쪽에는 작업 내용 및 commit message를 출력하게 된다.
+
+만약 local 에서 내 파일이 날아갔는데 이를 복구하고 싶다면 복구하고 싶은 시점의 commit을 찾고 해당 commit의 key값(7자리 문자열)을 이용하여 다음 명령어를 사용하면 된다.
+
+**!!주의!!**
+```
+이 방법은 현재 local의 모든 파일을 해당 commit 시점으로 되돌리기 때문에 혹시 특정 파일이 여전히 작업 중인 경우 백업을 해두거나 branch를 갈라서 commit을 되돌리고 필요한 파일만 따로 저장하는 것을 추천한다.
+```
+
+```git reset --hard [commit HEAD]``` 명령어를 하면 local의 모든 파일이 해당 commit 시점으로 돌아가게 된다. 이전 시점의 파일이 필요하거나 ``git pull`` 로 해결되지 않는 문제가 발생할 때 쓸 수 있다.
+
 ### 자주 겪는 error 상황들..
 
-* 100 MB 이상 업로드
+#### 100 MB 이상 업로드
 
 초보들이 자주 겪는 데이터 크기 문제가 있음. 다들 한 번씩은 겪는 문제라고 생각된다.
 
@@ -229,7 +298,7 @@ Blob은 Binary Large Object로 파일의 내용만을 압축된 binary 타입으
 
 그런데 만약 이 파일이 꼭 필요해서 올려야만 프로젝트 내의 기능을 사용할 수 있다면 어떻게 공유할까?
 
-실험실에서는 4가지 방법이 있음.
+실험실에서는 4가지 정도 방법이 있음.(더 있을텐데 복잡할까봐 이것만 했음.)
 
 1. share folder 활용
      * 가장 직관적인 방법. 153 서버 share folder를 사용해서 파일을 연구원 내에서 공유. 1GB 미만 정도에서 적합할 듯함.
@@ -244,7 +313,59 @@ Blob은 Binary Large Object로 파일의 내용만을 압축된 binary 타입으
 4. 외부 링크를 통해 다운로드(wget, curl)
     * 기존 DB를 받기에 편함.
 
-* Merge를 하라고?
+#### Resolve conflict?
 
 git branch를 main에 merge 시키려다가 특정 파일을 merge 시키는 도중 conflict 에러를 종종 겪게 된다.
 
+이건 여러명 작업하다보면 어쩔 수 없이 발생하게 되는 문제이고, 혼자서 작업하다가도 git이 어떻게 돌아가는지 몰라서 일으킬 수 있는 문제다.
+
+왜 이런 일이 발생하는지 실제 충돌을 일으켜서 테스트 해보자.
+
+먼저 test_conflict라는 branch를 생성하고 해당 branch에서 test_conflict_2.txt를 추가한다.
+
+![add_new_file](/003_code/code_review/250423_khy/images/branch_data_add_LI.jpg)
+
+이를 commit하고 branch를 publish한 뒤 merge까지 거치면 해당 txt 파일이 main branch에 들어와 있는 것을 확인할 수 있다.
+
+해당 txt에 다음과 같이 내용을 추가한 뒤에 commit 하고 publish까지 하자.
+
+![conflict_1](/003_code/code_review/250423_khy/images/conflict_test.PNG)
+
+이후 test_conflict branch로 돌아와서 test_conflict_2.txt 파일에 다음과 같이 작성하고 commit 한 뒤에 publish까지 해보자. 
+
+![conflict_2](/003_code/code_review/250423_khy/images/test_conflict_2.PNG)
+
+이 후 내 git의 remote repository에서 merge를 하려고 하면 다음과 같이 conflict error가 발생하는 것을 확인할 수 있다.
+
+![merge_error](/003_code/code_review/250423_khy/images/merge_error.PNG)
+
+이 경우 **Resolve conflicts** 를 들어가서 확인해보면
+
+![conf_info](/003_code/code_review/250423_khy/images/resolve_conflict.PNG)
+
+와 같이 **같은 파일에 대해서 서로 다른 branch에서 commit이 진행**되어 충돌이 난 것을 확인할 수 있다.
+
+이 경우 branch의 commit을 되돌리거나 다음과 같이 사소한 코드 변경의 경우 원하는 코드로 변경 해서 저장하면 merge 할 수 있게된다.
+
+![resolve_conf](/003_code/code_review/250423_khy/images/save_test_branch.PNG)
+
+원하는 코드만 남기고 **Merge as resolved** 버튼을 누르면 merge 할 수 있게 되어 최종적으로 수정된 내용이 merge된다.
+
+이런식으로 conflict 날 경우 대부분의 경우 수작업으로 충돌난 부분을 수정해 줘야하기 때문에 신중한 판단이 필요하다.
+
+```
+잘 모르겠으면 issue에 해당 commit HEAD와 함께 올려 코드 수정요청을 하자.
+```
+
+### branch에 갇혔어요..!
+
+이건 아무나 해결해보고 여기 업데이트 가능하면 해주길 바람..!
+왜냐하면 위에 적어둔 내용 중에 문제 원인과 답이 모두 다 있다.
+
+### 마치며..
+
+아무리 이렇게 적어도 merge 잘못해서 git reset --hard 해볼 거 다 안다.
+
+이 문서는 그럴 때마다 아직 무슨 명령어 써야하는지 모를 경우 꺼내서 보고 git 명령어에 익숙해졌으면 해서 작성했으니 편하게 보도록했으면 한다..
+
+상남자식 코딩을 해도 좋고, 데이터를 쌓아두고 있어도 상관은 없는데 괜히 데이터 날렸다가 학위 1년 더 하지말고 그냥 git 열심히 쓰길 바란다.
