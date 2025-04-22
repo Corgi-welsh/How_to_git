@@ -112,7 +112,15 @@ git initialize가 되고 다음과 같은 화면으로 전환된다.
 
 staging area의 파일들을 git commit 을 통해 메세지를 남기면서 local repository에 저장한다.
 
-![git_commit](/003_code/code_review/250423_khy/images/)
+commit 버튼을 누르면 아래와 같은 화면이 나온다.
+
+![git_commit](/003_code/code_review/250423_khy/images/git_commit.PNG)
+
+메세지를 입력하고 저장한 뒤 해당 창을 종료하면 push할 수 있는 버튼이 활성화 된다.
+
+* git push
+
+
 
 
 ### Branch는 왜 써야하는가?
